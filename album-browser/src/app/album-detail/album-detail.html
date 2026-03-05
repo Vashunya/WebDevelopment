@@ -1,0 +1,36 @@
+<div class="detail">
+  @if (loading) {
+    <div class="loading">⏳ Loading album...</div>
+  } @else if (album) {
+    <div class="detail-header">
+      <button (click)="goBack()" class="btn-back">← Back</button>
+      <h1 class="detail-title">Album #{{ album.id }}</h1>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-row">
+        <span class="detail-label">User ID</span>
+        <span class="detail-value">{{ album.userId }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Title</span>
+        <input
+          [(ngModel)]="album.title"
+          class="detail-input"
+          placeholder="Album title" />
+      </div>
+
+      <div class="detail-actions">
+        <button (click)="saveAlbum()" class="btn-save">💾 Save</button>
+        <a [routerLink]="['/albums', album.id, 'photos']" class="btn-photos">
+          🖼 View Photos
+        </a>
+      </div>
+
+      @if (saved) {
+        <p class="saved-message">✅ Saved successfully!</p>
+      }
+    </div>
+  }
+</div>

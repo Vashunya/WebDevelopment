@@ -1,0 +1,19 @@
+<div class="albums">
+  <h1 class="albums-title">Albums</h1>
+
+  @if (loading) {
+    <div class="loading">⏳ Loading albums...</div>
+  } @else {
+    <div class="albums-list">
+      @for (album of albums; track album.id) {
+        <div class="album-item">
+          <a [routerLink]="['/albums', album.id]" class="album-link">
+            <span class="album-id">#{{ album.id }}</span>
+            <span class="album-title">{{ album.title }}</span>
+          </a>
+          <button (click)="deleteAlbum(album.id)" class="btn-delete">🗑 Delete</button>
+        </div>
+      }
+    </div>
+  }
+</div>
