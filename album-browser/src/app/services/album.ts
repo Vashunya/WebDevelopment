@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Album } from '../models/album';
 import { Photo } from '../models/photo';
 
@@ -21,7 +22,13 @@ export class AlbumService {
   }
 
   getAlbumPhotos(id: number): Observable<Photo[]> {
-    return this.http.get<Photo[]>(`${this.apiUrl}/albums/${id}/photos`);
+    return this.http.get<Photo[]>(`${this.apiUrl}/albums/${id}/photos`).pipe(
+      map(photos => photos.map(photo => ({
+        ...photo,
+        thumbnailUrl: `https://picsum.photos/seed/${photo.id}/150/150`,
+        url: `https://picsum.photos/seed/${photo.id}/600/600`
+      })))
+    );
   }
 
   updateAlbum(album: Album): Observable<Album> {
