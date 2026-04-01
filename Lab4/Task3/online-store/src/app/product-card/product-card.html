@@ -1,0 +1,27 @@
+<div class = "card">
+  <div class="gallery">
+    <button class="gallery-btn left" (click)="prevImage()">‹</button>
+    <img [src]="product().images[currentImageIndex]" [alt]="product().name" class="card-image"/>
+    <button class="gallery-btn right" (click)="nextImage()">›</button>
+  </div>
+  <div class="card-body">
+    <h3 class="card-title">{{product().name}}</h3>
+    <p class="card-description">{{product().description}}</p>
+    <div class="card-rating">
+      @for (star of getStars(product().rating); track star){
+        <span [class.filled]="star <= product().rating">★</span>
+      }
+      <span class="rating-number">{{product().rating}}</span>
+    </div>
+    <p class="card-price">{{product().price}} ₸</p>
+    <div class="card-likes">
+      ❤️ {{ product().likes }}
+    </div>
+    <div class="card-buttons">
+      <a [href] = "product().link" target="_blank" class="btn-buy">КУПиТ</a>
+      <button (click)="shareOnTelegram()" class="btn-share">Подесльм</button>
+      <button (click)="onLike()" class="btn-like">Yhfdbnc❤️</button>
+      <button (click)="onDelete()" class="btn-delete">Удлить</button>
+    </div>
+  </div>
+</div>

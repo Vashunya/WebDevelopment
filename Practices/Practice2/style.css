@@ -1,0 +1,38 @@
+body{
+    background: burlywood;
+    font-family: sans-serif;
+    font-size: 20px;
+}
+#title:hover{
+    font-size: 100px;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+    color: fuchsia;
+}
+h1 {
+    color: navy;
+    font-size: 50px;
+}
+td:hover, th:hover{
+    background: cornflowerblue;
+}
+table, td, th {
+    border: 1px solid black;
+}
+tr {
+    background: tomato;
+}
+tbody tr:nth-child(odd){background: mediumaquamarine}
+ul{
+    list-style-type: square;
+}
+ol{
+    list-style-type: arabic-indic;
+}
+ul:hover, ol:hover{
+    color: burlywood;
+}

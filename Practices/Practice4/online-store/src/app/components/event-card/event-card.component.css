@@ -1,0 +1,93 @@
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.thumbnails {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: #eee;
+}
+
+.thumb {
+  width: 50px;
+  height: 36px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+
+.thumb.selected {
+  border-color: #3f51b5;
+}
+
+.card-body {
+  padding: 12px;
+}
+
+h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 8px 0;
+}
+
+.stars {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.price {
+  color: #222;
+  font-size: 16px;
+}
+
+.buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn-buy {
+  background: #3f51b5;
+  color: white;
+  padding: 7px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.btn-share {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-share-tg {
+  background: #0088cc;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}

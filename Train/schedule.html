@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Недельное расписание</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0d1424;
+    --surface2: #111827;
+    --border: #1e2d4a;
+    --accent: #2563eb;
+    --accent-glow: #3b82f6;
+    --accent-soft: rgba(37,99,235,0.15);
+    --text: #e2e8f0;
+    --text-muted: #4a6080;
+    --text-dim: #8ba3c0;
+    --danger: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -40%;
+    left: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(37,99,235,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+  }
+
+  .logo {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .logo span {
+    color: var(--accent-glow);
+  }
+
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .week-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent-glow);
+    background: var(--accent-soft);
+  }
+
+  /* GRID */
+  .grid-wrapper {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .time-col {
+    width: 64px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .time-col .col-head {
+    height: 52px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .time-slot {
+    height: 60px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 6px 10px 0 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .day-col {
+    flex: 1;
+    border-right: 1px solid var(--border);
+  }
+
+  .day-col:last-child { border-right: none; }
+
+  .col-head {
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .col-head .day-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .col-head .day-num {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .col-head.today {
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--accent);
+  }
+
+  .col-head.today .day-name { color: var(--accent-glow); }
+  .col-head.today .day-num { color: var(--accent-glow); }
+
+  .day-body {
+    position: relative;
+  }
+
+  .cell {
+    height: 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .cell:last-child { border-bottom: none; }
+
+  .cell:hover {
+    background: rgba(37,99,235,0.06);
+  }
+
+  .cell::after {
+    content: '+';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--accent);
+    font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .cell:hover::after { opacity: 0.5; }
+
+  /* EVENT BLOCK */
+  .event {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    border-radius: 8px;
+    padding: 6px 10px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 2;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .event:hover {
+    transform: translateX(2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    z-index: 10;
+  }
+
+  .event-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .event-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .event-del {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: opacity 0.15s;
+    line-height: 1;
+  }
+
+  .event:hover .event-del { opacity: 0.7; }
+  .event-del:hover { opacity: 1 !important; }
+
+  /* COLORS */
+  .color-0 { background: linear-gradient(135deg,#1d4ed8,#2563eb); color: #bfdbfe; }
+  .color-1 { background: linear-gradient(135deg,#0e7490,#0891b2); color: #a5f3fc; }
+  .color-2 { background: linear-gradient(135deg,#4338ca,#6366f1); color: #c7d2fe; }
+  .color-3 { background: linear-gradient(135deg,#0f766e,#14b8a6); color: #99f6e4; }
+  .color-4 { background: linear-gradient(135deg,#1e40af,#3b82f6); color: #dbeafe; }
+
+  /* MODAL */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 360px;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  }
+
+  .overlay.open .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal h2 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .modal label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .modal input, .modal select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .modal input:focus, .modal select:focus {
+    border-color: var(--accent);
+  }
+
+  .modal select option { background: var(--surface2); }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .color-picker {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .cp-swatch {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .cp-swatch:hover { transform: scale(1.1); }
+  .cp-swatch.active { border-color: white; }
+
+  .cp-0 { background: #2563eb; }
+  .cp-1 { background: #0891b2; }
+  .cp-2 { background: #6366f1; }
+  .cp-3 { background: #14b8a6; }
+  .cp-4 { background: #3b82f6; }
+
+  .modal-actions {
+    display: flex; gap: 10px; margin-top: 4px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 11px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover { background: var(--accent-glow); }
+
+  .btn-cancel {
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+
+  .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* CURRENT TIME */
+  .now-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-glow);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .now-line::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: -3px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-glow);
+  }
+
+  .current-time-badge {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--accent);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+    z-index: 50;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="logo">неделя<span>.</span></div>
+    <div class="week-nav">
+      <button class="nav-btn" onclick="changeWeek(-1)">←</button>
+      <span class="week-label" id="weekLabel"></span>
+      <button class="nav-btn" onclick="changeWeek(1)">→</button>
+    </div>
+  </header>
+
+  <div class="grid-wrapper">
+    <div class="time-col">
+      <div class="col-head time-col"></div>
+      <div id="timeSlots"></div>
+    </div>
+    <div id="dayColumns" style="display:flex; flex:1;"></div>
+  </div>
+</div>
+
+<div class="current-time-badge" id="clockBadge"></div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <h2 id="modalTitle">Добавить событие</h2>
+    <label>Название</label>
+    <input type="text" id="eventName" placeholder="Лекция, тренировка..." />
+    <div class="row2">
+      <div>
+        <label>Начало</label>
+        <input type="time" id="startTime" />
+      </div>
+      <div>
+        <label>Конец</label>
+        <input type="time" id="endTime" />
+      </div>
+    </div>
+    <label>Цвет</label>
+    <div class="color-picker">
+      <div class="cp-swatch cp-0 active" data-c="0" onclick="selectColor(0)"></div>
+      <div class="cp-swatch cp-1" data-c="1" onclick="selectColor(1)"></div>
+      <div class="cp-swatch cp-2" data-c="2" onclick="selectColor(2)"></div>
+      <div class="cp-swatch cp-3" data-c="3" onclick="selectColor(3)"></div>
+      <div class="cp-swatch cp-4" data-c="4" onclick="selectColor(4)"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="saveEvent()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DAYS_RU = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const HOURS_START = 7;
+  const HOURS_END = 22;
+
+  let weekOffset = 0;
+  let events = JSON.parse(localStorage.getItem('schedule_events') || '[]');
+  let selectedColor = 0;
+  let currentCell = null; // {dayIndex, hour}
+
+  function getWeekDates(offset = 0) {
+    const now = new Date();
+    const day = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + offset * 7);
+    return Array.from({length: 7}, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return d;
+    });
+  }
+
+  function formatDate(d) {
+    return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
+  }
+
+  function isToday(d) {
+    const now = new Date();
+    return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }
+
+  function dateKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function timeToMinutes(t) {
+    const [h,m] = t.split(':').map(Number);
+    return h*60 + m;
+  }
+
+  function render() {
+    const dates = getWeekDates(weekOffset);
+    const first = dates[0], last = dates[6];
+    document.getElementById('weekLabel').textContent =
+      `${formatDate(first)} — ${formatDate(last)}`;
+
+    // time slots
+    const tsEl = document.getElementById('timeSlots');
+    tsEl.innerHTML = '';
+    for (let h = HOURS_START; h <= HOURS_END; h++) {
+      const s = document.createElement('div');
+      s.className = 'time-slot';
+      s.textContent = h + ':00';
+      tsEl.appendChild(s);
+    }
+
+    // day columns
+    const dcEl = document.getElementById('dayColumns');
+    dcEl.innerHTML = '';
+
+    dates.forEach((date, di) => {
+      const col = document.createElement('div');
+      col.className = 'day-col';
+
+      const head = document.createElement('div');
+      head.className = 'col-head' + (isToday(date) ? ' today' : '');
+      head.innerHTML = `<span class="day-name">${DAYS_RU[di]}</span><span class="day-num">${date.getDate()}</span>`;
+      col.appendChild(head);
+
+      const body = document.createElement('div');
+      body.className = 'day-body';
+      body.style.position = 'relative';
+
+      const totalH = HOURS_END - HOURS_START + 1;
+      body.style.height = (totalH * 60) + 'px';
+
+      // cells
+      for (let h = HOURS_START; h <= HOURS_END; h++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.style.position = 'absolute';
+        cell.style.top = ((h - HOURS_START) * 60) + 'px';
+        cell.style.left = '0'; cell.style.right = '0';
+        cell.style.height = '60px';
+        cell.onclick = () => openModal(date, h);
+        body.appendChild(cell);
+      }
+
+      // events
+      const dk = dateKey(date);
+      const dayEvents = events.filter(e => e.date === dk);
+      dayEvents.forEach(ev => {
+        const startMin = timeToMinutes(ev.start);
+        const endMin = timeToMinutes(ev.end);
+        const top = (startMin - HOURS_START*60) / 60 * 60;
+        const height = Math.max((endMin - startMin) / 60 * 60 - 4, 24);
+
+        const el = document.createElement('div');
+        el.className = `event color-${ev.color}`;
+        el.style.top = top + 'px';
+        el.style.height = height + 'px';
+        el.innerHTML = `
+          <div class="event-title">${ev.name}</div>
+          <div class="event-time">${ev.start}–${ev.end}</div>
+          <button class="event-del" onclick="deleteEvent(event,'${ev.id}')">✕</button>
+        `;
+        body.appendChild(el);
+      });
+
+      // now line
+      if (isToday(date) && weekOffset === 0) {
+        const now = new Date();
+        const nowMin = now.getHours()*60 + now.getMinutes();
+        if (nowMin >= HOURS_START*60 && nowMin <= HOURS_END*60) {
+          const line = document.createElement('div');
+          line.className = 'now-line';
+          line.style.top = ((nowMin - HOURS_START*60) / 60 * 60) + 'px';
+          body.appendChild(line);
+        }
+      }
+
+      col.appendChild(body);
+      dcEl.appendChild(col);
+    });
+  }
+
+  function openModal(date, hour) {
+    currentCell = { date, hour };
+    document.getElementById('eventName').value = '';
+    document.getElementById('startTime').value = `${String(hour).padStart(2,'0')}:00`;
+    document.getElementById('endTime').value = `${String(hour+1).padStart(2,'0')}:00`;
+    selectColor(0);
+    document.getElementById('overlay').classList.add('open');
+    setTimeout(() => document.getElementById('eventName').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  }
+
+  function selectColor(c) {
+    selectedColor = c;
+    document.querySelectorAll('.cp-swatch').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.cp-swatch[data-c="${c}"]`).classList.add('active');
+  }
+
+  function saveEvent() {
+    const name = document.getElementById('eventName').value.trim();
+    const start = document.getElementById('startTime').value;
+    const end = document.getElementById('endTime').value;
+    if (!name || !start || !end) return;
+    if (timeToMinutes(end) <= timeToMinutes(start)) {
+      document.getElementById('endTime').style.borderColor = '#ef4444';
+      setTimeout(() => document.getElementById('endTime').style.borderColor = '', 1000);
+      return;
+    }
+    events.push({
+      id: Date.now().toString(),
+      date: dateKey(currentCell.date),
+      name, start, end,
+      color: selectedColor
+    });
+    localStorage.setItem('schedule_events', JSON.stringify(events));
+    closeModal();
+    render();
+  }
+
+  function deleteEvent(e, id) {
+    e.stopPropagation();
+    events = events.filter(ev => ev.id !== id);
+    localStorage.setItem('schedule_events', JSON.stringify(events));
+    render();
+  }
+
+  function changeWeek(dir) {
+    weekOffset += dir;
+    render();
+  }
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clockBadge').textContent =
+      now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  // keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Enter' && document.getElementById('overlay').classList.contains('open')) saveEvent();
+  });
+
+  render();
+  updateClock();
+  setInterval(updateClock, 30000);
+  setInterval(() => { if (weekOffset === 0) render(); }, 60000);
+</script>
+</body>
+</html>

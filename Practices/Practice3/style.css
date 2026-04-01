@@ -1,0 +1,31 @@
+*{
+    margin:0;
+}
+.main-header{
+    width:100%;
+    background: cornflowerblue;
+    color:white;
+}
+.header-logo{
+    margin-left: 10px;
+}
+.avatar{
+    width:200px;
+    margin-top: 20px;
+}
+.info,
+.wall,
+.photos,
+.questions{
+    padding:10px;
+}
+.info:hover,
+.wall:hover,
+.photos:hover,
+.questions:hover{
+    cursor: pointer;
+    background: #8c959f;
+}
+.png{
+    width: 20px;
+}

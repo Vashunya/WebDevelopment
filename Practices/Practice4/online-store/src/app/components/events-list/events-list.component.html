@@ -1,0 +1,8 @@
+<div class="container">
+  <h2>All Events ({{ events.length }})</h2>
+  <div class="grid">
+    @for (event of events; track event.id) {
+      <app-event-card [event]="event" />
+    }
+  </div>
+</div>

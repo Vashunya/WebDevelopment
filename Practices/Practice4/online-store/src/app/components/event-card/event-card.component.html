@@ -1,0 +1,34 @@
+<div class="card">
+  <img [src]="event.images[activeImage]" [alt]="event.name" class="card-img" />
+
+  <div class="thumbnails">
+    @for (img of event.images; track $index) {
+      <img
+        [src]="img"
+        class="thumb"
+        [class.selected]="activeImage === $index"
+        (click)="activeImage = $index"
+      />
+    }
+  </div>
+
+  <div class="card-body">
+    <h3>{{ event.name }}</h3>
+    <p>{{ event.description }}</p>
+
+    <div class="stars">
+      @for (star of [1,2,3,4,5]; track star) {
+        <span [style.color]="star <= event.rating ? 'gold' : 'gray'">★</span>
+      }
+      <span> {{ event.rating }}</span>
+    </div>
+
+    <p class="price"><strong>{{ event.price }} ₸</strong></p>
+
+    <div class="buttons">
+      <a [href]="event.link" target="_blank" class="btn-buy">Buy Ticket</a>
+      <button (click)="shareWhatsapp()" class="btn-share">WhatsApp</button>
+      <button (click)="shareTelegram()" class="btn-share-tg">Telegram</button>
+    </div>
+  </div>
+</div>

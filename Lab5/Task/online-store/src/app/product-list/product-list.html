@@ -1,0 +1,50 @@
+<div class = "page">
+  <header class="header">
+    <h1 class = "header-title">KASPI</h1>
+  </header>
+  <nav class="categories">
+    @for (category of categories; track category.id) {
+      <button
+        class="category-btn"
+        [class.active]="selectedCategoryId === category.id"
+        (click)="selectCategory(category.id)">
+        {{ category.name }}
+      </button>
+    }
+  </nav>
+  <div class="favorites-section">
+    <h2 class="favorites-title"> Избранты ({{ favorites.length }})</h2>
+    @if (favorites.length === 0) {
+      <p class="favorites-empty">Ниуого</p>
+    } @else {
+      <div class="favorites-grid">
+        @for (product of favorites; track product.id) {
+          <app-product-card
+            [product]="product"
+            (deleteProduct)="deleteProduct($event)"
+            (likeProduct)="likeProduct($event)"
+            (toggleFavorite)="toggleFavorite($event)" />
+        }
+      </div>
+    }
+  </div>
+  @if (selectedCategoryId === null) {
+    <div class="welcome">
+      <p>Выберите категорию чтобы увидеть товары</p>
+    </div>
+  } @else if (filteredProducts.length === 0) {
+    <div class="welcome">
+      <p>В этой категории больше нет товаров</p>
+    </div>
+  } @else {
+    <main class="product-grid">
+      @for (product of filteredProducts; track product.id) {
+        <app-product-card
+          [product]="product"
+          (deleteProduct)="deleteProduct($event)"
+          (likeProduct)="likeProduct($event)"
+          (toggleFavorite)="toggleFavorite($event)" />
+      }
+    </main>
+  }
+</div>

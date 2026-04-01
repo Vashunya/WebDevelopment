@@ -1,0 +1,154 @@
+.card{
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow .2s;
+  height: 100%;
+}
+.card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.card-image{
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  padding: 16px;
+  background: lightgray;
+}
+.card-body{
+  padding: 16px;
+}
+.card-title{
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: black;
+}
+.card-rating{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+.card-rating span{
+  color: #d0d7de;
+  font-size: 18px;
+}
+.card-rating span.filled{
+  color: sandybrown;
+}
+.rating-number{
+  font-size: 13px;
+  color: black;
+  margin-left: 6px;
+}
+.card-price{
+  font-size: 20px;
+  font-weight: 700;
+  color: black;
+  margin: 0 0 16px;
+}
+.card-buttons{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-buy{
+  flex: 1;
+  padding: 10px;
+  background: red;
+  color : white;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-buy:hover{
+  background: #d00000;
+}
+.btn-share{
+  padding: 10px 16px;
+  background: dodgerblue;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-share:hover{
+  background: royalblue;
+}
+.card-likes {
+  font-size: 16px;
+  color: #e31e24;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.btn-like {
+  padding: 10px 16px;
+  background: #fff0f0;
+  color: #e31e24;
+  border: 2px solid #e31e24;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn-like:hover {
+  background: #e31e24;
+  color: white;
+}
+.btn-delete {
+  padding: 10px 16px;
+  background: #fff;
+  color: #666;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn-delete:hover {
+  background: #ff4444;
+  color: white;
+  border-color: #ff4444;
+}
+.btn-favorite {
+  padding: 10px 16px;
+  background: #fff8e1;
+  color: #f5a623;
+  border: 2px solid #f5a623;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn-favorite:hover {
+  background: #f5a623;
+  color: white;
+}
+.gallery {
+  position: relative;
+  background: lightgray;
+  height: 200px;
+  overflow: hidden;
+}
+.gallery-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 1;
+  border-radius: 4px;
+}
+.gallery-btn.left { left: 8px; }
+.gallery-btn.right { right: 8px; }
+.gallery-btn:hover { background: rgba(0,0,0,0.7); }
